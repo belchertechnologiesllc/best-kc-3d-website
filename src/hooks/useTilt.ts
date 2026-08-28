@@ -15,6 +15,7 @@ export function useTilt<T extends HTMLElement>({ maxDeg = 6, scale = 1 }: UseTil
     const el = ref.current
     if (!el) return
     if (window.matchMedia('(hover: none)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const handleMove = (e: PointerEvent) => {
       const rect = el.getBoundingClientRect()

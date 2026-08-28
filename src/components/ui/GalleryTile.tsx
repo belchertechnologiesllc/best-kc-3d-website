@@ -14,6 +14,7 @@ export function GalleryTile({ item, swatch }: { item: GalleryItem; swatch: strin
     const pane = paneRef.current
     if (!tile || !pane) return
     if (window.matchMedia('(hover: none)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const handleMove = (e: PointerEvent) => {
       const rect = tile.getBoundingClientRect()

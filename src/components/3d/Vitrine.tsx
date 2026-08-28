@@ -46,7 +46,7 @@ export function Vitrine() {
         <boxGeometry args={[FRAME_WIDTH - 0.05, FRAME_HEIGHT - 0.05, FRAME_DEPTH - 0.05]} />
         <MeshTransmissionMaterial
           transmission={1}
-          roughness={0.04}
+          roughness={0}
           thickness={0.35}
           ior={1.52}
           chromaticAberration={0.025}
@@ -54,6 +54,7 @@ export function Vitrine() {
           distortion={0.05}
           distortionScale={0.2}
           temporalDistortion={0}
+          resolution={1024}
           color="#eef4ee"
           background={undefined}
         />

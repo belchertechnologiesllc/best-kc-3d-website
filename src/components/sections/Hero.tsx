@@ -1,11 +1,18 @@
-import { useLayoutEffect, useRef } from 'react'
+import { lazy, Suspense, useLayoutEffect, useRef } from 'react'
 import { hero } from '../../lib/content'
-import { HeroScene } from '../3d/HeroScene'
+import { MobileHeroFallback } from '../3d/MobileHeroFallback'
 import { useHeroScrollTimeline } from '../../hooks/useHeroScrollTimeline'
+import { useCanRender3D } from '../../hooks/useCanRender3D'
 import { gsap } from '../../lib/gsap'
 import { cursorState } from '../../lib/cursor-state'
 
+// Code-split the whole three.js/R3F bundle out of the main chunk so
+// mobile and low-power visitors (who get MobileHeroFallback instead)
+// never pay for downloading it.
+const HeroScene = lazy(() => import('../3d/HeroScene').then((m) => ({ default: m.HeroScene })))
+
 export function Hero() {
+  const canRender3D = useCanRender3D()
   const wrapperRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -53,6 +60,7 @@ export function Hero() {
     const glow = glowRef.current
     if (!el || !glow) return
     if (window.matchMedia('(hover: none)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const moveX = gsap.quickTo(glow, 'x', { duration: 0.5, ease: 'power3' })
     const moveY = gsap.quickTo(glow, 'y', { duration: 0.5, ease: 'power3' })
@@ -86,11 +94,7 @@ export function Hero() {
   }, [])
 
   return (
-    <section
-      id="hero"
-      ref={wrapperRef}
-      className="relative motion-safe:h-[210vh] motion-reduce:h-screen"
-    >
+    <section id="hero" ref={wrapperRef} className="relative h-[210vh]">
       <div
         ref={pinRef}
         className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-hollow-950 px-6 text-center text-linen-50"
@@ -106,7 +110,13 @@ export function Hero() {
         />
 
         <div ref={sceneWrapRef} className="absolute inset-0 z-0">
-          <HeroScene />
+          {canRender3D ? (
+            <Suspense fallback={<MobileHeroFallback />}>
+              <HeroScene />
+            </Suspense>
+          ) : (
+            <MobileHeroFallback />
+          )}
         </div>
 
         <div
