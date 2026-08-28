@@ -1,18 +1,28 @@
 import { philosophy } from '../../lib/content'
+import { VitrineMark } from '../ui/VitrineMark'
 
 export function Philosophy() {
   return (
-    <section id="philosophy" className="px-6 py-32 md:px-10">
-      <div className="mx-auto max-w-4xl md:ml-16 md:mr-auto">
-        <p className="text-sm tracking-[0.2em] uppercase">{philosophy.eyebrow}</p>
-        <div className="mt-6 space-y-2">
-          {philosophy.lines.map((line) => (
-            <p key={line} className="text-3xl md:text-5xl">
+    <section id="philosophy" className="relative bg-linen-100 px-6 py-32 md:px-10">
+      <VitrineMark className="absolute top-16 right-8 hidden h-24 w-auto text-brass-500/50 md:right-16 md:block" />
+
+      <div className="mx-auto max-w-4xl md:mr-auto md:ml-16">
+        <p className="eyebrow">{philosophy.eyebrow}</p>
+        <div className="mt-6 space-y-1">
+          {philosophy.lines.map((line, i) => (
+            <p
+              key={line}
+              className={`font-display text-3xl leading-tight md:text-5xl ${
+                i === 1 ? 'text-ink-900 italic' : 'text-ink-900'
+              }`}
+            >
               {line}
             </p>
           ))}
         </div>
-        <p className="mt-8 max-w-xl text-base leading-relaxed">{philosophy.body}</p>
+        <p className="mt-8 max-w-xl text-base leading-relaxed text-ink-700">
+          {philosophy.body}
+        </p>
       </div>
     </section>
   )

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { bloomColors, budgetRanges, greeneryOptions } from '../../lib/content'
 import { useConfigurator } from '../../lib/configurator-context'
+import { VitrineMark } from '../ui/VitrineMark'
 
 export function Booking() {
   const { selection } = useConfigurator()
@@ -14,74 +15,79 @@ export function Booking() {
   }, [selection])
 
   return (
-    <section id="booking" className="px-6 py-32 md:px-10">
+    <section id="booking" className="relative bg-hollow-950 px-6 py-32 text-linen-50 md:px-10">
+      <VitrineMark filled className="absolute top-10 right-8 h-20 w-auto text-brass-400/70 md:right-16" />
+
       <div className="mx-auto max-w-3xl">
-        <h2 className="text-3xl md:text-4xl">Reserve Your Date</h2>
-        <p className="mt-4 text-sm">
+        <p className="eyebrow">Reserve</p>
+        <h2 className="mt-4 font-display text-3xl md:text-4xl">Reserve Your Date</h2>
+        <p className="mt-4 text-sm text-linen-100/70">
           We take a limited number of wedding dates each season — inquire early.
         </p>
 
-        {submitted ? (
-          <p role="status" className="mt-10 text-base">
-            Thank you — we’ll be in touch within two business days.
-          </p>
-        ) : (
-          <form
-            className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2"
-            onSubmit={(e) => {
-              e.preventDefault()
-              setSubmitted(true)
-            }}
-          >
-            <label className="flex flex-col gap-1 text-sm">
-              Name
-              <input name="name" type="text" required autoComplete="name" className="px-3 py-2" />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Wedding date
-              <input name="date" type="date" required className="px-3 py-2" />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Venue / city
-              <input name="venue" type="text" required className="px-3 py-2" />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Guest count
-              <input name="guestCount" type="number" min={1} className="px-3 py-2" />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Budget range
-              <select name="budget" defaultValue="" className="px-3 py-2">
-                <option value="" disabled>
-                  Select a range
-                </option>
-                {budgetRanges.map((range) => (
-                  <option key={range} value={range}>
-                    {range}
+        <div className="specimen-card mt-10 rounded-sm p-6 md:p-10">
+          {submitted ? (
+            <p role="status" className="py-6 text-base text-ink-900">
+              Thank you — we’ll be in touch within two business days.
+            </p>
+          ) : (
+            <form
+              className="grid grid-cols-1 gap-6 text-ink-900 md:grid-cols-2"
+              onSubmit={(e) => {
+                e.preventDefault()
+                setSubmitted(true)
+              }}
+            >
+              <label className="flex flex-col gap-1 text-sm">
+                Name
+                <input name="name" type="text" required autoComplete="name" className="field" />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                Wedding date
+                <input name="date" type="date" required className="field" />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                Venue / city
+                <input name="venue" type="text" required className="field" />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                Guest count
+                <input name="guestCount" type="number" min={1} className="field" />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                Budget range
+                <select name="budget" defaultValue="" className="field">
+                  <option value="" disabled>
+                    Select a range
                   </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Bloom preferences
-              <input
-                name="bloomPreferences"
-                type="text"
-                value={bloomPreferences}
-                onChange={(e) => setBloomPreferences(e.target.value)}
-                placeholder="e.g. Ivory, Eucalyptus"
-                className="px-3 py-2"
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-sm md:col-span-2">
-              Message
-              <textarea name="message" rows={4} className="px-3 py-2" />
-            </label>
-            <button type="submit" className="mt-2 px-6 py-3 text-sm md:col-span-2 md:justify-self-start">
-              Send Inquiry
-            </button>
-          </form>
-        )}
+                  {budgetRanges.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                Bloom preferences
+                <input
+                  name="bloomPreferences"
+                  type="text"
+                  value={bloomPreferences}
+                  onChange={(e) => setBloomPreferences(e.target.value)}
+                  placeholder="e.g. Ivory, Eucalyptus"
+                  className="field"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-sm md:col-span-2">
+                Message
+                <textarea name="message" rows={4} className="field" />
+              </label>
+              <button type="submit" className="btn btn-primary mt-2 w-fit md:col-span-2">
+                Send Inquiry
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </section>
   )

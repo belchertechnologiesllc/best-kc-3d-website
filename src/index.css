@@ -68,6 +68,123 @@
   }
 }
 
+@layer components {
+  .eyebrow {
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-brass-400);
+  }
+
+  .btn {
+    font-family: var(--font-label);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.75rem;
+    border-radius: 2px;
+    transition:
+      transform 300ms var(--ease-settle),
+      box-shadow 300ms var(--ease-settle);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: linear-gradient(
+      100deg,
+      var(--color-brass-500) 0%,
+      var(--color-brass-400) 45%,
+      var(--color-brass-500) 100%
+    );
+    color: var(--color-ink-900);
+    background-size: 220% 100%;
+    background-position: 0% 0%;
+  }
+
+  .btn-primary:hover {
+    background-position: 100% 0%;
+    transition:
+      background-position 500ms var(--ease-settle),
+      transform 300ms var(--ease-settle);
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--color-glass-border);
+    color: currentColor;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-brass-400);
+    color: var(--color-brass-300);
+  }
+
+  .link-brass {
+    position: relative;
+    color: currentColor;
+    text-decoration: none;
+  }
+
+  .link-brass::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: -2px;
+    height: 1px;
+    background: var(--color-brass-400);
+    transition: right 250ms var(--ease-settle);
+  }
+
+  .link-brass:hover::after {
+    right: 0;
+  }
+
+  .glass-panel {
+    background: var(--color-glass-white);
+    border: 1px solid var(--color-glass-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .specimen-card {
+    background: var(--color-linen-50);
+    border: 1px solid var(--color-linen-200);
+    box-shadow: 0 24px 48px -32px rgba(12, 26, 19, 0.55);
+  }
+
+  .mask-line {
+    display: block;
+    overflow: hidden;
+  }
+
+  .mask-line > * {
+    display: block;
+    transform: translateY(100%);
+  }
+
+  .field {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-linen-300);
+    padding-block: 0.6rem;
+    color: var(--color-ink-900);
+    font-family: var(--font-body);
+    position: relative;
+  }
+
+  .field:focus {
+    outline: none;
+    border-bottom-color: var(--color-brass-500);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
