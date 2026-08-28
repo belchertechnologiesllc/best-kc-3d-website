@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+@import '@fontsource/fraunces/400.css';
+@import '@fontsource/fraunces/400-italic.css';
+@import '@fontsource/fraunces/500.css';
+@import '@fontsource/fraunces/600.css';
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/500.css';
+@import './styles/tokens.css';
+
+@theme {
+  --color-hollow-950: var(--color-hollow-950);
+  --color-hollow-900: var(--color-hollow-900);
+  --color-hollow-800: var(--color-hollow-800);
+  --color-hollow-700: var(--color-hollow-700);
+  --color-hollow-600: var(--color-hollow-600);
+  --color-hollow-500: var(--color-hollow-500);
+
+  --color-brass-200: var(--color-brass-200);
+  --color-brass-300: var(--color-brass-300);
+  --color-brass-400: var(--color-brass-400);
+  --color-brass-500: var(--color-brass-500);
+  --color-brass-600: var(--color-brass-600);
+  --color-brass-700: var(--color-brass-700);
+
+  --color-linen-50: var(--color-linen-50);
+  --color-linen-100: var(--color-linen-100);
+  --color-linen-200: var(--color-linen-200);
+  --color-linen-300: var(--color-linen-300);
+
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-700: var(--color-ink-700);
+  --color-ink-500: var(--color-ink-500);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-label: var(--font-label);
+
+  --ease-settle: var(--ease-settle);
+  --ease-spring: var(--ease-spring);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-linen-100);
+    color: var(--color-ink-900);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-brass-400);
+    color: var(--color-ink-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brass-500);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
