@@ -63,7 +63,7 @@ export function GalleryTile({ item, swatch }: { item: GalleryItem; swatch: strin
       />
       <figcaption className="p-4">
         <p className="font-display text-base text-ink-900">{item.couple}</p>
-        <p className="eyebrow mt-1">{item.venue}</p>
+        <p className="eyebrow eyebrow-on-light mt-1">{item.venue}</p>
         {item.quote && <p className="mt-3 text-sm text-ink-700 italic">“{item.quote}”</p>}
       </figcaption>
     </figure>

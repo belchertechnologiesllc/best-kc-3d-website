@@ -12,7 +12,7 @@ export function ServiceCard({ service, forward }: { service: Service; forward?: 
           forward ? 'md:p-10' : ''
         }`}
       >
-        <p className="eyebrow">{service.eyebrow}</p>
+        <p className="eyebrow eyebrow-on-light">{service.eyebrow}</p>
         <h3 className="font-display text-2xl text-ink-900">{service.name}</h3>
         <p className="text-sm leading-relaxed text-ink-700">{service.description}</p>
         <a href={service.href} className="link-brass mt-2 w-fit text-sm text-ink-900">

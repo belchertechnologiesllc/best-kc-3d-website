@@ -35,20 +35,20 @@ export function Hero() {
         gsap.set(overlayRef.current, { autoAlpha: 0 })
         gsap.set(sceneWrapRef.current, { autoAlpha: 1, scale: 1 })
         gsap.set(headlineInnerRef.current, { y: 0, autoAlpha: 1 })
-        gsap.set(subCtaRef.current, { y: 0, autoAlpha: 1 })
+        gsap.set(subCtaRef.current, { y: 0, opacity: 1 })
         return
       }
 
       gsap.set(sceneWrapRef.current, { autoAlpha: 0, scale: 0.96 })
       const headlineHeight = headlineInnerRef.current?.offsetHeight ?? 0
       gsap.set(headlineInnerRef.current, { y: headlineHeight, autoAlpha: 0 })
-      gsap.set(subCtaRef.current, { y: 12, autoAlpha: 0 })
+      gsap.set(subCtaRef.current, { y: 12, opacity: 0 })
 
       const tl = gsap.timeline({ defaults: { ease: 'settle' } })
       tl.to(overlayRef.current, { autoAlpha: 0, duration: 0.4 }, 0)
         .to(sceneWrapRef.current, { autoAlpha: 1, scale: 1, duration: 0.6 }, 0.4)
         .to(headlineInnerRef.current, { y: 0, autoAlpha: 1, duration: 0.6 }, 1.0)
-        .to(subCtaRef.current, { y: 0, autoAlpha: 1, duration: 0.6 }, 1.6)
+        .to(subCtaRef.current, { y: 0, opacity: 1, duration: 0.6 }, 1.6)
     }, wrapperRef)
 
     return () => ctx.revert()

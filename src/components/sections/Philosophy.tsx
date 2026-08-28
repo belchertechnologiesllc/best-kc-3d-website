@@ -8,8 +8,8 @@ export function Philosophy() {
       <VitrineMark className="absolute top-16 right-8 hidden h-24 w-auto text-brass-500/50 md:right-16 md:block" />
 
       <div className="mx-auto max-w-4xl md:mr-auto md:ml-16">
-        <p className="eyebrow">{philosophy.eyebrow}</p>
-        <MaskReveal as="div" className="mt-6 space-y-1">
+        <p className="eyebrow eyebrow-on-light">{philosophy.eyebrow}</p>
+        <MaskReveal as="h2" className="mt-6 block space-y-1">
           {philosophy.lines.map((line, i) => (
             <span
               key={line}

@@ -10,9 +10,12 @@ export function Services() {
     const grid = gridRef.current
     if (!grid) return
     const ctx = gsap.context(() => {
+      // Plain opacity, not autoAlpha: autoAlpha also sets visibility:hidden,
+      // which pulls the "Explore" links out of tab order until scrolled
+      // into view. Keyboard users must be able to reach them regardless.
       gsap.from(grid.children, {
         y: 32,
-        autoAlpha: 0,
+        opacity: 0,
         duration: 0.6,
         stagger: 0.1,
         ease: 'settle',

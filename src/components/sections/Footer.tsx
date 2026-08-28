@@ -37,7 +37,7 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="relative mx-auto mt-12 max-w-6xl border-t border-linen-100/10 pt-6 text-xs text-linen-100/50">
+      <div className="relative mx-auto mt-12 max-w-6xl border-t border-linen-100/10 pt-6 text-xs text-linen-100/60">
         <p>
           © {new Date().getFullYear()} {nav.logo}. All rights reserved.
         </p>
