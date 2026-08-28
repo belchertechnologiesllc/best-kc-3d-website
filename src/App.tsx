@@ -1,8 +1,31 @@
+import { Nav } from './components/ui/Nav'
+import { Hero } from './components/sections/Hero'
+import { Philosophy } from './components/sections/Philosophy'
+import { Services } from './components/sections/Services'
+import { Process } from './components/sections/Process'
+import { Gallery } from './components/sections/Gallery'
+import { Configurator } from './components/sections/Configurator'
+import { Faq } from './components/sections/Faq'
+import { Booking } from './components/sections/Booking'
+import { Footer } from './components/sections/Footer'
+import { ConfiguratorProvider } from './lib/configurator-context'
+
 function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-hollow-950 text-linen-50">
-      <p className="font-display text-3xl italic">BEST-KC — scaffold ready</p>
-    </main>
+    <ConfiguratorProvider>
+      <Nav />
+      <main>
+        <Hero />
+        <Philosophy />
+        <Services />
+        <Process />
+        <Gallery />
+        <Configurator />
+        <Faq />
+        <Booking />
+      </main>
+      <Footer />
+    </ConfiguratorProvider>
   )
 }
 
