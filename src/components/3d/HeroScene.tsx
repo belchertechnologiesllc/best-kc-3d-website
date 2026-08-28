@@ -2,11 +2,12 @@ import { Canvas } from '@react-three/fiber'
 import { ContactShadows, PerspectiveCamera } from '@react-three/drei'
 import { Suspense } from 'react'
 import { Vitrine } from './Vitrine'
+import { BloomBuild } from './BloomBuild'
 import { DustMotes } from './DustMotes'
 import { SceneEnvironment } from './SceneEnvironment'
-import { CameraRig } from './CameraRig'
+import { ScrollCameraRig } from './ScrollCameraRig'
 import { VolumetricBeam } from './VolumetricBeam'
-import { HERO_CAMERA_START, HERO_LOOK_TARGET } from './scene-config'
+import { HERO_CAMERA_START } from './scene-config'
 
 export function HeroScene() {
   return (
@@ -16,7 +17,7 @@ export function HeroScene() {
       className="!absolute inset-0"
     >
       <PerspectiveCamera makeDefault position={HERO_CAMERA_START} fov={32} near={0.1} far={30} />
-      <CameraRig target={HERO_LOOK_TARGET} />
+      <ScrollCameraRig />
 
       <Suspense fallback={null}>
         <SceneEnvironment />
@@ -27,6 +28,7 @@ export function HeroScene() {
       <directionalLight position={[-3, 1.8, -2]} intensity={0.7} color="#c9a66b" />
 
       <Vitrine />
+      <BloomBuild />
       <DustMotes />
       <VolumetricBeam />
 
