@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { bloomColors, budgetRanges, greeneryOptions } from '../../lib/content'
 import { useConfigurator } from '../../lib/configurator-context'
 import { VitrineMark } from '../ui/VitrineMark'
+import { MaskReveal } from '../ui/MaskReveal'
 
 export function Booking() {
   const { selection } = useConfigurator()
@@ -20,7 +21,9 @@ export function Booking() {
 
       <div className="mx-auto max-w-3xl">
         <p className="eyebrow">Reserve</p>
-        <h2 className="mt-4 font-display text-3xl md:text-4xl">Reserve Your Date</h2>
+        <MaskReveal as="h2" className="mt-4 font-display text-3xl md:text-4xl">
+          {['Reserve Your Date']}
+        </MaskReveal>
         <p className="mt-4 text-sm text-linen-100/70">
           We take a limited number of wedding dates each season — inquire early.
         </p>
@@ -38,23 +41,23 @@ export function Booking() {
                 setSubmitted(true)
               }}
             >
-              <label className="flex flex-col gap-1 text-sm">
+              <label className="field-wrap flex flex-col gap-1 text-sm">
                 Name
                 <input name="name" type="text" required autoComplete="name" className="field" />
               </label>
-              <label className="flex flex-col gap-1 text-sm">
+              <label className="field-wrap flex flex-col gap-1 text-sm">
                 Wedding date
                 <input name="date" type="date" required className="field" />
               </label>
-              <label className="flex flex-col gap-1 text-sm">
+              <label className="field-wrap flex flex-col gap-1 text-sm">
                 Venue / city
                 <input name="venue" type="text" required className="field" />
               </label>
-              <label className="flex flex-col gap-1 text-sm">
+              <label className="field-wrap flex flex-col gap-1 text-sm">
                 Guest count
                 <input name="guestCount" type="number" min={1} className="field" />
               </label>
-              <label className="flex flex-col gap-1 text-sm">
+              <label className="field-wrap flex flex-col gap-1 text-sm">
                 Budget range
                 <select name="budget" defaultValue="" className="field">
                   <option value="" disabled>
@@ -67,7 +70,7 @@ export function Booking() {
                   ))}
                 </select>
               </label>
-              <label className="flex flex-col gap-1 text-sm">
+              <label className="field-wrap flex flex-col gap-1 text-sm">
                 Bloom preferences
                 <input
                   name="bloomPreferences"
@@ -78,7 +81,7 @@ export function Booking() {
                   className="field"
                 />
               </label>
-              <label className="flex flex-col gap-1 text-sm md:col-span-2">
+              <label className="field-wrap flex flex-col gap-1 text-sm md:col-span-2">
                 Message
                 <textarea name="message" rows={4} className="field" />
               </label>

@@ -169,6 +169,10 @@
     transform: translateY(100%);
   }
 
+  .field-wrap {
+    position: relative;
+  }
+
   .field {
     background: transparent;
     border: none;
@@ -176,12 +180,28 @@
     padding-block: 0.6rem;
     color: var(--color-ink-900);
     font-family: var(--font-body);
-    position: relative;
+    width: 100%;
   }
 
   .field:focus {
     outline: none;
-    border-bottom-color: var(--color-brass-500);
+  }
+
+  .field-wrap::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--color-brass-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 200ms var(--ease-settle);
+  }
+
+  .field-wrap:focus-within::after {
+    transform: scaleX(1);
   }
 }
 
