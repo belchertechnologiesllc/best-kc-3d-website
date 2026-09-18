@@ -2,13 +2,7 @@ import type { CommitmentItem } from '../types'
 import { newCommitmentItem } from '../types'
 
 const FIVE = [1, 2, 3, 4, 5] as const
-
-function familyImpactToFive(v: number): number {
-  return v + 3
-}
-function fiveToFamilyImpact(v: number): -2 | -1 | 0 | 1 | 2 {
-  return (v - 3) as -2 | -1 | 0 | 1 | 2
-}
+const FAMILY_IMPACT = [-2, -1, 0, 1, 2] as const
 
 export function Inventory({
   items,
@@ -117,14 +111,16 @@ export function Inventory({
                 <td className="px-3 py-2">
                   <select
                     className="field w-16"
-                    value={familyImpactToFive(item.familyImpact)}
+                    value={item.familyImpact}
                     onChange={(e) =>
-                      update(item.id, { familyImpact: fiveToFamilyImpact(Number(e.target.value)) })
+                      update(item.id, {
+                        familyImpact: Number(e.target.value) as CommitmentItem['familyImpact'],
+                      })
                     }
                   >
-                    {FIVE.map((n) => (
+                    {FAMILY_IMPACT.map((n) => (
                       <option key={n} value={n}>
-                        {n}
+                        {n > 0 ? `+${n}` : n}
                       </option>
                     ))}
                   </select>
