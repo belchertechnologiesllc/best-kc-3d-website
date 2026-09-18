@@ -211,6 +211,21 @@
   }
 }
 
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .specimen-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

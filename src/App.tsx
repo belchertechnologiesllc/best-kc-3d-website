@@ -1,31 +1,50 @@
-import { Nav } from './components/ui/Nav'
-import { Hero } from './components/sections/Hero'
-import { Philosophy } from './components/sections/Philosophy'
-import { Services } from './components/sections/Services'
-import { Process } from './components/sections/Process'
-import { Gallery } from './components/sections/Gallery'
-import { Configurator } from './components/sections/Configurator'
-import { Faq } from './components/sections/Faq'
-import { Booking } from './components/sections/Booking'
-import { Footer } from './components/sections/Footer'
-import { ConfiguratorProvider } from './lib/configurator-context'
+import { useState } from 'react'
+import { Nav, type Tab } from './components/Nav'
+import { Inventory } from './pages/Inventory'
+import { Scorecard } from './pages/Scorecard'
+import { Portfolio } from './pages/Portfolio'
+import { Constraints } from './pages/Constraints'
+import { Review } from './pages/Review'
+import { useLocalState } from './lib/storage'
+import { defaultOperatingConstraints, type CommitmentItem, type OperatingConstraints, type ReviewEntry } from './types'
 
 function App() {
+  const [tab, setTab] = useState<Tab>('inventory')
+  const [items, setItems] = useLocalState<CommitmentItem[]>('cds.items', () => [])
+  const [constraints, setConstraints] = useLocalState<OperatingConstraints>(
+    'cds.constraints',
+    defaultOperatingConstraints,
+  )
+  const [reviews, setReviews] = useLocalState<ReviewEntry[]>('cds.reviews', () => [])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+
+  function openScorecard(id: string) {
+    setSelectedId(id)
+    setTab('scorecard')
+  }
+
   return (
-    <ConfiguratorProvider>
-      <Nav />
+    <>
+      <Nav active={tab} onChange={setTab} />
       <main>
-        <Hero />
-        <Philosophy />
-        <Services />
-        <Process />
-        <Gallery />
-        <Configurator />
-        <Faq />
-        <Booking />
+        {tab === 'inventory' && (
+          <Inventory items={items} setItems={setItems} openScorecard={openScorecard} />
+        )}
+        {tab === 'scorecard' && (
+          <Scorecard
+            items={items}
+            setItems={setItems}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+          />
+        )}
+        {tab === 'portfolio' && <Portfolio items={items} openScorecard={openScorecard} />}
+        {tab === 'constraints' && (
+          <Constraints constraints={constraints} setConstraints={setConstraints} />
+        )}
+        {tab === 'review' && <Review reviews={reviews} setReviews={setReviews} />}
       </main>
-      <Footer />
-    </ConfiguratorProvider>
+    </>
   )
 }
 
