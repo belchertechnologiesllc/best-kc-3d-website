@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Session } from '@supabase/supabase-js'
+import type { User } from 'firebase/auth'
 import { Nav, type Tab } from './components/Nav'
 import { AuthPanel, type SyncStatus } from './components/AuthPanel'
 import { Inventory } from './pages/Inventory'
@@ -8,7 +8,7 @@ import { Portfolio } from './pages/Portfolio'
 import { Constraints } from './pages/Constraints'
 import { Review } from './pages/Review'
 import { useLocalState } from './lib/storage'
-import { supabase } from './lib/supabase'
+import { EMAIL_FOR_SIGN_IN_KEY, isCloudSyncConfigured, loadFirebaseSync, type FirebaseSync } from './lib/firebase'
 import {
   defaultOperatingConstraints,
   type CommitmentItem,
@@ -28,41 +28,56 @@ function App() {
   const [reviews, setReviews] = useLocalState<ReviewEntry[]>('cds.reviews', () => [])
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const [session, setSession] = useState<Session | null>(null)
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>(supabase ? 'signed-out' : 'offline')
+  const [sync, setSync] = useState<FirebaseSync | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(
+    isCloudSyncConfigured ? 'signed-out' : 'offline',
+  )
   const hasLoadedRemote = useRef(false)
 
+  // Load the Firebase SDK on demand — only when cloud sync is configured —
+  // so unconfigured users never pay for it.
   useEffect(() => {
-    if (!supabase) return
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, next) => {
+    if (!isCloudSyncConfigured) return
+    loadFirebaseSync().then(setSync)
+  }, [])
+
+  // Complete a passwordless email-link sign-in if this load is the redirect
+  // back from that link.
+  useEffect(() => {
+    if (!sync) return
+    if (!sync.isEmailLinkUrl()) return
+    let email = localStorage.getItem(EMAIL_FOR_SIGN_IN_KEY)
+    if (!email) email = window.prompt('Confirm your email to finish signing in')
+    if (!email) return
+    sync
+      .completeEmailLinkSignIn(email)
+      .then(() => {
+        localStorage.removeItem(EMAIL_FOR_SIGN_IN_KEY)
+        window.history.replaceState({}, '', window.location.pathname)
+      })
+      .catch(() => setSyncStatus('error'))
+  }, [sync])
+
+  useEffect(() => {
+    if (!sync) return
+    return sync.onAuth((next) => {
       hasLoadedRemote.current = false
-      setSession(next)
+      setUser(next)
       if (!next) setSyncStatus('signed-out')
     })
-    return () => subscription.subscription.unsubscribe()
-  }, [])
+  }, [sync])
 
   // On sign-in: pull the remote snapshot (if any) down before any local
   // edit is allowed to push back up and clobber it.
   useEffect(() => {
-    if (!supabase || !session) return
+    if (!sync || !user) return
     let cancelled = false
     setSyncStatus('loading')
-    supabase
-      .from('app_state')
-      .select('data')
-      .eq('user_id', session.user.id)
-      .maybeSingle()
-      .then(({ data, error }) => {
+    sync
+      .loadSnapshot(user.uid)
+      .then((remote) => {
         if (cancelled) return
-        if (error) {
-          setSyncStatus('error')
-          return
-        }
-        const remote = data?.data as
-          | { items?: CommitmentItem[]; constraints?: OperatingConstraints; reviews?: ReviewEntry[] }
-          | undefined
         if (remote) {
           if (remote.items) setItems(remote.items)
           if (remote.constraints) setConstraints(remote.constraints)
@@ -71,30 +86,27 @@ function App() {
         hasLoadedRemote.current = true
         setSyncStatus('synced')
       })
+      .catch(() => setSyncStatus('error'))
     return () => {
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
+  }, [sync, user])
 
   // Push local edits up, debounced, once the initial remote pull has
   // completed (so we never overwrite a remote snapshot with a stale local
   // one before it's had a chance to load).
   useEffect(() => {
-    if (!supabase || !session || !hasLoadedRemote.current) return
+    if (!sync || !user || !hasLoadedRemote.current) return
     setSyncStatus('syncing')
     const timeout = setTimeout(() => {
-      supabase!
-        .from('app_state')
-        .upsert({
-          user_id: session.user.id,
-          data: { items, constraints, reviews },
-          updated_at: new Date().toISOString(),
-        })
-        .then(({ error }) => setSyncStatus(error ? 'error' : 'synced'))
+      sync
+        .pushSnapshot(user.uid, { items, constraints, reviews })
+        .then(() => setSyncStatus('synced'))
+        .catch(() => setSyncStatus('error'))
     }, SYNC_DEBOUNCE_MS)
     return () => clearTimeout(timeout)
-  }, [items, constraints, reviews, session])
+  }, [items, constraints, reviews, sync, user])
 
   function openScorecard(id: string) {
     setSelectedId(id)
@@ -103,7 +115,13 @@ function App() {
 
   return (
     <>
-      <Nav active={tab} onChange={setTab} rightSlot={<AuthPanel session={session} status={syncStatus} />} />
+      <Nav
+        active={tab}
+        onChange={setTab}
+        rightSlot={
+          <AuthPanel user={user} status={syncStatus} configured={isCloudSyncConfigured} sync={sync} />
+        }
+      />
       <main>
         {tab === 'inventory' && (
           <Inventory items={items} setItems={setItems} openScorecard={openScorecard} />

@@ -1,24 +1,38 @@
 import { useState } from 'react'
-import type { Session } from '@supabase/supabase-js'
-import { supabase } from '../lib/supabase'
+import type { User } from 'firebase/auth'
+import { EMAIL_FOR_SIGN_IN_KEY, type FirebaseSync } from '../lib/firebase'
 
 export type SyncStatus = 'offline' | 'signed-out' | 'loading' | 'syncing' | 'synced' | 'error'
 
-export function AuthPanel({ session, status }: { session: Session | null; status: SyncStatus }) {
+export function AuthPanel({
+  user,
+  status,
+  configured,
+  sync,
+}: {
+  user: User | null
+  status: SyncStatus
+  configured: boolean
+  sync: FirebaseSync | null
+}) {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
 
-  if (!supabase) {
+  if (!configured) {
     return <span className="no-print whitespace-nowrap text-xs text-ink-500">Not synced</span>
   }
 
-  if (session) {
+  if (!sync) {
+    return <span className="no-print whitespace-nowrap text-xs text-ink-500">Loading sync…</span>
+  }
+
+  if (user) {
     return (
       <div className="no-print flex items-center gap-3 whitespace-nowrap text-xs text-ink-500">
-        <span>{session.user.email}</span>
+        <span>{user.email}</span>
         <span className="capitalize">{status}</span>
         <button
-          onClick={() => supabase!.auth.signOut()}
+          onClick={() => sync.signOutUser()}
           className="font-label uppercase tracking-wide text-ink-700 hover:text-ink-900"
         >
           Sign out
@@ -40,11 +54,9 @@ export function AuthPanel({ session, status }: { session: Session | null; status
       className="no-print flex items-center gap-2"
       onSubmit={async (e) => {
         e.preventDefault()
-        const { error } = await supabase!.auth.signInWithOtp({
-          email,
-          options: { emailRedirectTo: window.location.origin },
-        })
-        if (!error) setSent(true)
+        await sync.sendSignInLink(email)
+        localStorage.setItem(EMAIL_FOR_SIGN_IN_KEY, email)
+        setSent(true)
       }}
     >
       <input

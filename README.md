@@ -36,7 +36,7 @@ Each page is printable (`Cmd/Ctrl+P`) with the tab navigation hidden.
 
 - Vite + React + TypeScript
 - Tailwind CSS v4
-- `localStorage` always; optionally synced to Supabase (Postgres + auth,
+- `localStorage` always; optionally synced to Firebase (Auth + Firestore,
   no server to run) when configured
 
 ## Develop
@@ -57,29 +57,36 @@ npm run preview # serve the production build locally
 
 `dist/` is a static build with no server-side requirements — deploy it to
 any static host (Netlify, Vercel, Cloudflare Pages, S3+CDN, etc.). If you
-want cloud sync in production, set the same two env vars (below) in the
-host's build environment.
+want cloud sync in production, set the same env vars (below) in the
+host's build environment, and add that production URL as an authorized
+domain in Firebase (see step 5 below).
 
 ## Cloud sync (optional)
 
 Without any setup, the app is fully functional on `localStorage` alone —
 each browser/device has its own independent copy. To sync the same data
-across devices, wire up a free Supabase project:
+across devices, wire up a free Firebase project:
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. In the SQL editor, run `supabase/schema.sql` from this repo — it
-   creates one `app_state` table with row-level security so each user can
-   only read/write their own row.
-3. In **Authentication → Providers**, make sure **Email** is enabled with
-   the magic-link (OTP) flow (it is by default).
-4. In **Settings → API**, copy the **Project URL** and **anon public
-   key**.
-5. Copy `.env.example` to `.env` and fill in `VITE_SUPABASE_URL` and
-   `VITE_SUPABASE_ANON_KEY`. Restart `npm run dev` after adding it.
-6. Set the same two variables in your static host's environment for
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com).
+2. **Build → Authentication → Get started**, then enable the **Email/Password**
+   provider and turn on its **Email link (passwordless sign-in)** option.
+3. **Build → Firestore Database → Create database** (production mode is
+   fine — the security rules below lock it down).
+4. In the Firestore **Rules** tab, paste in the contents of
+   `firestore.rules` from this repo and publish. It restricts each
+   `appState/{uid}` document to that same signed-in user.
+5. **Project settings → General → Your apps → Add app → Web**, register
+   the app, and copy the config values it shows you. While there, also
+   add your dev/prod URLs (e.g. `localhost`, your production domain)
+   under **Authentication → Settings → Authorized domains**.
+6. Copy `.env.example` to `.env` and fill in `VITE_FIREBASE_API_KEY`,
+   `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, and
+   `VITE_FIREBASE_APP_ID` from that config. Restart `npm run dev` after
+   adding it.
+7. Set the same variables in your static host's environment for
    production builds.
 
 Once configured, a "Sync across devices" box appears in the nav bar —
-enter an email, click through the magic link it sends, and that
+enter an email, click through the sign-in link it emails you, and that
 browser's data is pushed up. Signing in on another device/browser pulls
 the same data down and keeps both in sync from then on.

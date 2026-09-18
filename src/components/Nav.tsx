@@ -19,7 +19,7 @@ export function Nav({
 }) {
   return (
     <nav className="no-print sticky top-0 z-10 border-b border-linen-300 bg-linen-100/95 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto px-4 py-3">
+      <div className="flex items-center gap-1 overflow-x-auto px-4 py-3">
         <span className="eyebrow-on-light eyebrow mr-3 whitespace-nowrap">Commitment System</span>
         {TABS.map((tab) => (
           <button
