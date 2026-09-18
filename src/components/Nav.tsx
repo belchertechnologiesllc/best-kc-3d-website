@@ -8,7 +8,15 @@ const TABS: { id: Tab; label: string; page: string }[] = [
   { id: 'review', label: 'Review', page: 'Monthly' },
 ]
 
-export function Nav({ active, onChange }: { active: Tab; onChange: (tab: Tab) => void }) {
+export function Nav({
+  active,
+  onChange,
+  rightSlot,
+}: {
+  active: Tab
+  onChange: (tab: Tab) => void
+  rightSlot?: React.ReactNode
+}) {
   return (
     <nav className="no-print sticky top-0 z-10 border-b border-linen-300 bg-linen-100/95 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto px-4 py-3">
@@ -27,6 +35,7 @@ export function Nav({ active, onChange }: { active: Tab; onChange: (tab: Tab) =>
             <span className="ml-1.5 opacity-60">{tab.page}</span>
           </button>
         ))}
+        {rightSlot && <div className="ml-auto pl-3">{rightSlot}</div>}
       </div>
     </nav>
   )

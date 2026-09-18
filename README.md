@@ -2,8 +2,9 @@
 
 A repeatable Capture → Score → Decide → Review tool for deciding what earns
 the right to remain in your life, instead of re-litigating it from scratch
-every time. Everything is entered and stays in your browser's local
-storage — there is no server or account.
+every time. Works fully offline on your browser's local storage; sign in
+with just an email to sync the same data across devices (see Cloud sync
+below).
 
 ## The system
 
@@ -35,7 +36,8 @@ Each page is printable (`Cmd/Ctrl+P`) with the tab navigation hidden.
 
 - Vite + React + TypeScript
 - Tailwind CSS v4
-- No backend — state persists to `localStorage` in your browser only
+- `localStorage` always; optionally synced to Supabase (Postgres + auth,
+  no server to run) when configured
 
 ## Develop
 
@@ -54,6 +56,30 @@ npm run preview # serve the production build locally
 ## Deploy
 
 `dist/` is a static build with no server-side requirements — deploy it to
-any static host (Netlify, Vercel, Cloudflare Pages, S3+CDN, etc.). Because
-all data lives in `localStorage`, each browser/device has its own
-independent copy — there is no sync between devices.
+any static host (Netlify, Vercel, Cloudflare Pages, S3+CDN, etc.). If you
+want cloud sync in production, set the same two env vars (below) in the
+host's build environment.
+
+## Cloud sync (optional)
+
+Without any setup, the app is fully functional on `localStorage` alone —
+each browser/device has its own independent copy. To sync the same data
+across devices, wire up a free Supabase project:
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. In the SQL editor, run `supabase/schema.sql` from this repo — it
+   creates one `app_state` table with row-level security so each user can
+   only read/write their own row.
+3. In **Authentication → Providers**, make sure **Email** is enabled with
+   the magic-link (OTP) flow (it is by default).
+4. In **Settings → API**, copy the **Project URL** and **anon public
+   key**.
+5. Copy `.env.example` to `.env` and fill in `VITE_SUPABASE_URL` and
+   `VITE_SUPABASE_ANON_KEY`. Restart `npm run dev` after adding it.
+6. Set the same two variables in your static host's environment for
+   production builds.
+
+Once configured, a "Sync across devices" box appears in the nav bar —
+enter an email, click through the magic link it sends, and that
+browser's data is pushed up. Signing in on another device/browser pulls
+the same data down and keeps both in sync from then on.
